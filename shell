@@ -1,0 +1,17 @@
+#!/bin/bash
+#$ -V
+#$ -pe mpi_8 16
+#$ -N CMSXMPL
+#$ -q short.q
+#$ -S /bin/bash 
+#$ -cwd
+#$ -l h_rt=24:00:00
+
+. /etc/profile.d/modules.sh
+module load comsol/53
+
+NUM_CORE=$(echo $PE | cut -d '_' -f2)   ## Number of cores to be used by each compute node
+NUM_NODE=`expr $NSLOTS / $NUM_CORE`     ## Total number of compute nodes
+NUM_PROC=$(nproc)                           ## Total number of processors per compute node
+
+comsol batch -nn $NUM_NODE –np $NUM_CORE –f $TMPDIR/machines –inputfile MyInputFileName –outputfile MyOutputFileName –batchlog MyLogFileName –tmpdir /uwork/p0xxxxx/
